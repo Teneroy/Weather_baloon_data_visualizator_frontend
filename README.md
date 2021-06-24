@@ -1,2 +1,24 @@
-# Weather_baloon_data_visualizator_frontend
-Path prediction and data visualisation frontend part of an IOT weather baloon project for the University of Passau
+# weather_baloon_data_visualizator_frontend
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
