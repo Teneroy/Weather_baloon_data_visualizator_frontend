@@ -1,30 +1,27 @@
 <template>
 
   <div style="height: 100vh; width: 100%;">
-    <div class="info" style="height: 20vh">
-      <span>Center: {{ center }}</span>
-      <span>Zoom: {{ zoom }}</span>
-      <span>Bounds: {{ bounds }}</span>
-    </div>
     <l-map
-        style="height: 80vh; width: 100%"
+        style="height: 100%; width: 100%"
         :zoom="zoom"
         :center="center"
-        :markerLatLng="markerLatLng"
         @update:zoom="zoomUpdated"
         @update:center="centerUpdated"
         @update:bounds="boundsUpdated"
-        @update:markerLatLng="markerUpdated"
     >
       <l-tile-layer :url="url"></l-tile-layer>
-      <l-marker :lat-lng="markerLatLng" ></l-marker>
+      <l-marker :lat-lng="lastLatLng"
+                @update:visible="true"
+      ></l-marker>
+      <l-polyline :lat-lngs="lastPredPolylineAscend.latlngs" :color="lastPredPolylineAscend.color"></l-polyline>
+      <l-polyline :lat-lngs="lastPredPolylineDescend.latlngs" :color="lastPredPolylineDescend.color"></l-polyline>
     </l-map>
   </div>
 
 </template>
 
 <script>
-import {LMap, LTileLayer, LMarker} from 'vue2-leaflet';
+import {LMap, LTileLayer, LMarker, LPolyline} from 'vue2-leaflet';
 
 import {
   Icon
@@ -41,21 +38,45 @@ export default {
   components: {
     LMap,
     LTileLayer,
-    LMarker
+    LMarker,
+    LPolyline
+  },
+  props: {
+    position: Array,
+    ascendingTrajectory: Array,
+    descendingTrajectory: Array
   },
   data () {
     return {
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       zoom: 13,
-      center: [48.573349, 13.45764],
       bounds: null,
-      markerLatLng: [48.573349, 13.45764]
+      center: this.position
     };
   },
-  methods: {
-    markerUpdated(latLng) {
-      this.markerLatLng = latLng;
+  computed: {
+    lastLatLng: function() {
+      return this.position
     },
+    lastPredPolylineAscend: function () {
+      return {
+        latlngs: this.ascendingTrajectory,
+        color: 'green'
+      }
+    },
+    lastPredPolylineDescend: function () {
+      return {
+        latlngs: this.descendingTrajectory,
+        color: 'red'
+      }
+    }
+  },
+  mounted() {
+    setInterval(() => {
+      console.log(this.position);
+    },3000);
+  },
+  methods: {
     zoomUpdated (zoom) {
       this.zoom = zoom;
     },
