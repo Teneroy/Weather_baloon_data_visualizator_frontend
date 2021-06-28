@@ -11,6 +11,11 @@
         :longitude=position[1]
         :time=time
     />
+    <PathPredictionInfo
+        :latitude=landingCoords[0]
+        :longitude=landingCoords[1]
+        :time=landingTime
+    />
   </section>
 </template>
 
@@ -19,10 +24,12 @@
 import MapComponent from "./MapComponent";
 import GPSService from "../services/GPSService";
 import GPSInfo from "./GPSInfo";
+import PathPredictionInfo from "./PathPredictionInfo";
 
 export default {
   name: "GPSLayout",
   components: {
+    PathPredictionInfo,
     GPSInfo,
     MapComponent
   },
@@ -32,7 +39,9 @@ export default {
       altitude: 0,
       time: '',
       ascendingTrajectory: [],
-      descendingTrajectory: []
+      descendingTrajectory: [],
+      landingTime: '',
+      landingCoords: [0, 0],
     };
   },
   methods: {
@@ -64,14 +73,18 @@ export default {
           const ascend = prediction[0].trajectory;
           const descend = prediction[1].trajectory;
 
-          console.log(descend)
-
           const predictionData = this.preparePathPredictionData(ascend, descend);
-
-          console.log(predictionData);
 
           this.ascendingTrajectory = predictionData.ascendCoordinates;
           this.descendingTrajectory = predictionData.descendCoordinates;
+
+          this.landingTime = descend[descend.length - 1].datetime;
+          this.landingCoords = [
+            descend[descend.length - 1].latitude,
+            descend[descend.length - 1].longitude
+          ];
+
+          console.log(this.landingTime);
         });
 
       }, 5000);

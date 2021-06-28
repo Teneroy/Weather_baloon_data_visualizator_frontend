@@ -71,11 +71,6 @@ export default {
       }
     }
   },
-  mounted() {
-    setInterval(() => {
-      console.log(this.position);
-    },3000);
-  },
   methods: {
     zoomUpdated (zoom) {
       this.zoom = zoom;
