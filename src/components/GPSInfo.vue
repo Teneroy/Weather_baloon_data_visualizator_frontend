@@ -24,7 +24,7 @@ export default {
   position: absolute;
   left: 0;
   bottom: 0;
-  z-index: 10000000;
+  z-index: 10000;
   background: #3fb984c7;
   color: #fff;
   padding: 10px;

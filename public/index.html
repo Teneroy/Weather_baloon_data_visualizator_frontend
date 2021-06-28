@@ -13,5 +13,38 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <div id="temperature_modal" class="modal">
+        <div id="temperature_modal_header" class="modal-header">
+            <h1>
+
+            </h1>
+            <span>
+                
+            </span>
+        </div>
+        <div id="temperature_modal_body"></div>
+    </div>
+    <div id="pressure_modal" class="modal">
+        <div id="pressure_modal_body"></div>
+    </div>
   </body>
+    <style>
+        body {
+            position: relative;
+        }
+        
+        .modal {
+            position: absolute;
+            z-index: 20000;
+            background: #ffffff;
+            box-shadow: 2px 2px rgba(0,0,0,.3);
+            width: 100%;
+            height: 100%;
+            display: none;
+            margin: auto;
+            transition: 0.3s all;
+            top: 0;
+            left: 0;
+        }
+    </style>
 </html>

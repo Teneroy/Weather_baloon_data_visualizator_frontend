@@ -7,7 +7,6 @@
         :dataFormat="dataFormat"
         :dataSource="dataSource"
     ></fusioncharts>
-    <button @click="updateData">Click to Update Data</button>
   </div>
 </template>
 
@@ -60,25 +59,17 @@ export default {
     }
   },
   mounted: function() {
+    const dataArray = [];
+    for (let i = 0; i < this.dataArr.length; i++) {
+      dataArray.push([
+        this.dataArr[i].hour
+        ,
+        this.dataArr[i].value
+      ]);
+    }
+
     Promise.all([
-        [
-          [
-            "2021-06-20T13:38:37",
-            11
-          ],
-          [
-            "2021-06-20T14:38:37",
-            14
-          ],
-          [
-            "2021-06-20T15:38:37",
-            12.3
-          ],
-          [
-            "2021-06-20T16:38:37",
-            15
-          ]
-        ]
+        dataArray
         ,
         [
           {
