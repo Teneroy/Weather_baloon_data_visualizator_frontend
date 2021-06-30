@@ -11,6 +11,7 @@
         :caption="'Pressure'"
         :number-suffix="'kPa'"
     />
+    <button v-on:click="plotTimeSeriesPressure">Plot pressure TimeSeries Graph</button>
   </section>
 </template>
 
@@ -20,6 +21,7 @@
 import Vue from 'vue'
 import TemperatureChart from "./TemperatureChart";
 import ChartComponent from "./ChartComponent";
+import SensorDataService from "../services/SensorDataService";
 export default {
   name: "DataLayout",
   components: {
@@ -28,6 +30,7 @@ export default {
   data() {
     return {
       timeSeriesComponent: null,
+      pressureComponent: null,
       tempVar: {
         data: [
           {hour: '2021-06-20T13:38:37', value: '35'},
@@ -51,6 +54,13 @@ export default {
     }
   },
   mounted() {
+    document.querySelector('#temperature_modal_close').addEventListener('click', this.destroyTemperatureModal);
+    document.querySelector('#pressure_modal_close').addEventListener('click', this.destroyPressureModal);
+
+    // SensorDataService.getAllSensorData().then(result => {
+    //
+    // });
+
     let i = 4;
     let t = 35;
     let p = 105.325;
@@ -64,28 +74,90 @@ export default {
     }, 5000);
   },
   methods: {
-    plotTimeSeriesTemperature() {
-      console.log(this.timeSeriesComponent);
+    plotTimeSeries(
+                   caption,
+                   suffix,
+                   data,
+                   schema,
+                   selector,
+                   component,
+                   graphWrapperId) {
+      document.querySelector('#' + selector).style.display = 'block';
 
-      document.querySelector("#temperature_modal").style.display = 'block';
-      document.querySelector("#blocking_shadow").style.display = 'block';
-
-      if(this.timeSeriesComponent != null) {
-        this.timeSeriesComponent.$destroy();
+      if(component != null) {
+        component.$destroy();
       }
 
-      document.querySelector('#temperature_modal_body').innerHTML =
-           '<div id="temperature_time_series"></div>';
-      //const chart = new ChartComponent().$mount('#temperature_time_series');
-      const TemperatureTS = Vue.extend(ChartComponent);
-      const tsComp = new TemperatureTS({
-        propsData: {
-          dataArr: this.tempVar.data
-        }
-      }).$mount('#temperature_time_series');
+      document.querySelector('#' + selector + '_body').innerHTML =
+          '<div id="' + graphWrapperId + '"></div>';
 
-      this.timeSeriesComponent = tsComp;
-      //tsComp.$destroy();
+      const TimeSeriesComponent = Vue.extend(ChartComponent);
+      const tsComp = new TimeSeriesComponent({
+        propsData: {
+          dataArr: data,
+          schema: schema,
+          caption: caption,
+          suffix: suffix
+        }
+      }).$mount('#' + graphWrapperId);
+
+      return tsComp;
+    },
+    plotTimeSeriesTemperature() {
+      this.timeSeriesComponent = this.plotTimeSeries(
+          'Temperature',
+          '℃',
+          this.tempVar.data,
+          [
+            {
+              "name": "Time",
+              "type": "date",
+              "format": "%Y-%-m-%dT%H:%M:%S"
+            },
+            {
+              "name": "Temperature",
+              "type": "number"
+            }
+          ],
+          'temperature_modal',
+          this.timeSeriesComponent,
+          'temperature_time_series'
+      );
+    },
+    plotTimeSeriesPressure() {
+      this.pressureComponent = this.plotTimeSeries(
+          'Pressure',
+          'kPa',
+          this.pressureData.data,
+          [
+            {
+              "name": "Time",
+              "type": "date",
+              "format": "%Y-%-m-%dT%H:%M:%S"
+            },
+            {
+              "name": "Pressure",
+              "type": "number"
+            }
+          ],
+          'pressure_modal',
+          this.pressureComponent,
+          'pressure_time_series'
+      );
+    },
+    destroyTemperatureModal() {
+      if(this.timeSeriesComponent == null)
+        return;
+
+      document.querySelector("#temperature_modal").style.display = 'none';
+      this.timeSeriesComponent.$destroy();
+    },
+    destroyPressureModal() {
+      if(this.pressureComponent == null)
+        return;
+
+      document.querySelector("#pressure_modal").style.display = 'none';
+      this.pressureComponent.$destroy();
     }
   }
 }
@@ -95,5 +167,7 @@ export default {
 .layout {
   width: 50%;
   height: 100vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 </style>

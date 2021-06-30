@@ -27,7 +27,10 @@ export default {
 
   },
   props: {
-    dataArr: Array
+    dataArr: Array,
+    schema: Array,
+    caption: String,
+    suffix: String
   },
   data() {
     return {
@@ -38,21 +41,21 @@ export default {
       dataSource: {
         data: null,
         caption: {
-          text: "Temperature"
+          text: this.caption
         },
         subcaption: {
-          text: "Temperature"
+          text: this.caption
         },
         yAxis: [
           {
             plot: {
-              value: "Temperature",
+              value: this.caption,
               type: "line"
             },
             format: {
-              suffix: "℃"
+              suffix: this.suffix
             },
-            title: "Temperature"
+            title: this.caption
           }
         ]
       }
@@ -71,17 +74,7 @@ export default {
     Promise.all([
         dataArray
         ,
-        [
-          {
-            "name": "Time",
-            "type": "date",
-            "format": "%Y-%-m-%dT%H:%M:%S"
-          },
-          {
-            "name": "Temperature",
-            "type": "number"
-          }
-        ]
+        this.schema
     ]).then(res => {
       const data = res[0];
       const schema = res[1];
