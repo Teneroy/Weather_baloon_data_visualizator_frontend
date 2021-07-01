@@ -9,6 +9,11 @@ export default class SensorDataService {
         return axios.get(request);
     }
 
+    static getLastSensorDataByLimit(limit) {
+        const request = url + '/getSensorDataByLimit?limit=' + limit;
+        return axios.get(request);
+    }
+
     static getSensorDataByTimeRange(lastDataRequest) {
         let request = url;
         if(lastDataRequest == null) {
